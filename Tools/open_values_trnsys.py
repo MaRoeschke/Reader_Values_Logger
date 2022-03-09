@@ -23,6 +23,8 @@ def _open_trnsys(filepath):
     df_trnsys.columns = ["Time2", "Q_WP [W]", "Heizen", "TWE", "Kuehlen"]
     df_trnsys[["Heizen", "TWE", "Kuehlen"]] = df_trnsys[["Heizen", "TWE", "Kuehlen"]].shift(1)
     df_trnsys[["Heizen", "TWE", "Kuehlen"]] = df_trnsys[["Heizen", "TWE", "Kuehlen"]].replace(np.nan, 0)
+
+    #Wenn ein Schalter aktiv, dann Standby ungleich 0
     df_trnsys["Standby"] = df_trnsys["Heizen"] + df_trnsys["TWE"] + df_trnsys["Kuehlen"]
 
     print("values_trnsys successfully load")
