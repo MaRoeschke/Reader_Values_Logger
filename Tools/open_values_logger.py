@@ -6,7 +6,7 @@ def _open_logger(filepath):
     if extension == ".xlsx":
         df_logger = pd.read_excel(filepath)
     elif extension == ".csv":
-        df_logger = pd.read_csv(filepath, decimal=".", delimiter=",")
+        df_logger = pd.read_csv(filepath, decimal=",", delimiter=";")
     else:
         print("File Error")
 

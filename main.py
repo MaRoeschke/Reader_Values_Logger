@@ -10,27 +10,32 @@ from Tools.open_values_trnsys import _open_trnsys
 from Tools.create_date_column import _create_date
 from Tools.energie_assignment import _assign_energies
 from Tools.create_day_values import _create_days
+from Tools.energies_typtage import determine_energy_typtage
 
 start_time = datetime.datetime.strptime("01 01 00 00", '%m %d %H %M')
+dev = False
+file_path_logger = "Files/2021-11-22_values_logger ohne BAT(csv).csv"
+file_path_trnsys = "Files/2021-11-22_values_trnsys ohne BAT(CSV).csv"
 
-#Einlesen des Gebäudeenergiebedarfes aus values_logger:
-controll_logger = False                     #Controllstruktur für richtiges File
-while controll_logger is False:
-    root = tk.Tk()
-    root.withdraw()
-    file_path_logger = filedialog.askopenfilename()
-    if file_path_logger.find("logger") != -1:
-        controll_logger = True
+while dev is True:
+    #Einlesen des Gebäudeenergiebedarfes aus values_logger:
+    controll_logger = False                     #Controllstruktur für richtiges File
+    while controll_logger is False:
+        root = tk.Tk()
+        root.withdraw()
+        file_path_logger = filedialog.askopenfilename()
+        if file_path_logger.find("logger") != -1:
+            controll_logger = True
 
-#Einlesen der Energiewert Energieerzeugungssystem aus values_trnsys:
-controll_trnsys = False                     #Controllstruktur für richtiges File
-while controll_trnsys is False:
-    root = tk.Tk()
-    root.withdraw()
-    file_path_trnsys = filedialog.askopenfilename()
-    if file_path_trnsys.find("trnsys") != -1:
-        controll_trnsys = True
-
+    #Einlesen der Energiewert Energieerzeugungssystem aus values_trnsys:
+    controll_trnsys = False                     #Controllstruktur für richtiges File
+    while controll_trnsys is False:
+        root = tk.Tk()
+        root.withdraw()
+        file_path_trnsys = filedialog.askopenfilename()
+        if file_path_trnsys.find("trnsys") != -1:
+            controll_trnsys = True
+    break
 #Öffnen der Datei values_logger und Rückgabe Dataframe
 df_logger = _open_logger(file_path_logger)
 
@@ -44,5 +49,9 @@ df = pd.concat([df_logger, df_trnsys], axis=1, sort=False)
 df1 = _create_date(df, start_time)
 df_complete = _assign_energies(df1)
 df_values_day = _create_days(df_complete)
+
+
+#Einlesen der Typtagvariation
+df_typtage = determine_energy_typtage(df_values_day)
 
 print(df_values_day)
