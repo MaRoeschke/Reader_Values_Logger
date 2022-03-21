@@ -1,4 +1,6 @@
 import pandas as pd
+import numpy as np
+
 #File der Clustervarianten, wobei Varianten durch Schlüssel z.B. C42/T1 (C=4Tage Heiz-/2Tage-Kühlperiode und T1 = Temperaturfaktor=1,0) gekennzeichnet sind
 filepath = "Files/Typtagvariation_TRY2015_524042130202_Jahr.csv"
 
@@ -17,7 +19,7 @@ def determine_energy_typtage(df_energies):
 
 #Initialisierung eines leeren Dataframe für Vergleich Jahreswerte aus jahressimulation und Clustering
 #Für eine bessere Auswertung wird die AusgabeCSV in der nächsten Schleife vorbereitet,dabei wird Tabelle in Dataframe erstellt
-    df_year = pd.DataFrame(columns=['Ergebnis', 'W_PV [kWh/a]', 'Q_H [kWh/a]', 'Q_TWW [kWh/a]', 'Q_K [kwH/a]', 'W_WP_H [kWh/a]', 'W_WP_K [kWh/a]', 'W_WP_TWE [kWh/a]', 'Q_WP_H [kWh/a]', 'Q_WP_K [kWh/a]', 'Q_WP_TWE [kWh/a]'])
+    df_year = pd.DataFrame(columns=['Ergebnis', 'W_PV [kWh/a]', 'Q_H [kWh/a]', 'Q_TWW [kWh/a]', 'Q_K [kWh/a]', 'W_WP_H [kWh/a]', 'W_WP_K [kWh/a]', 'W_WP_TWE [kWh/a]', 'Q_WP_H [kWh/a]', 'Q_WP_K [kWh/a]', 'Q_WP_TWE [kWh/a]', 'JAZ', 'SEER'])
 #Einmalige Berechnung der Jahreswerte aus Jahressimulation
     wpv = df_energies["W_PV [W]"].sum() / 1000
     qh = df_energies["Q_H [W]"].sum() / 1000
@@ -39,7 +41,7 @@ def determine_energy_typtage(df_energies):
             df_year.loc[i,'W_PV [kWh/a]'] = df_merge1['Anzahl Tage'].loc[i] * df_merge1["W_PV [W]"].loc[i] /1000
             df_year.loc[i,'Q_H [kWh/a]'] =  df_merge1['Anzahl Tage'].loc[i] * df_merge1["Q_H [W]"].loc[i] / 1000
             df_year.loc[i,'Q_TWW [kWh/a]'] = df_merge1['Anzahl Tage'].loc[i] * df_merge1["Q_TWW [W]"].loc[i] / 1000
-            df_year.loc[i,'Q_K [kwH/a]'] = df_merge1['Anzahl Tage'].loc[i] * df_merge1["Q_K [W]"].loc[i] / 1000
+            df_year.loc[i,'Q_K [kWh/a]'] = df_merge1['Anzahl Tage'].loc[i] * df_merge1["Q_K [W]"].loc[i] / 1000
             df_year.loc[i,'W_WP_H [kWh/a]'] = df_merge1['Anzahl Tage'].loc[i] * df_merge1["W_WP_H1 [W]"].loc[i] / 1000
             df_year.loc[i,'W_WP_K [kWh/a]'] = df_merge1['Anzahl Tage'].loc[i] * df_merge1["W_WP_K1 [W]"].loc[i] / 1000
             df_year.loc[i,'W_WP_TWE [kWh/a]'] = df_merge1['Anzahl Tage'].loc[i] * df_merge1["W_WP_TWE [W]"].loc[i] / 1000
@@ -53,7 +55,7 @@ def determine_energy_typtage(df_energies):
             df_year.loc[i, 'W_PV [kWh/a]'] = wpv
             df_year.loc[i, 'Q_H [kWh/a]'] = qh
             df_year.loc[i, 'Q_TWW [kWh/a]'] = qtww
-            df_year.loc[i, 'Q_K [kwH/a]'] = qk
+            df_year.loc[i, 'Q_K [kWh/a]'] = qk
             df_year.loc[i, 'W_WP_H [kWh/a]'] = wwph
             df_year.loc[i, 'W_WP_K [kWh/a]'] = wwpk
             df_year.loc[i, 'W_WP_TWE [kWh/a]'] = wwpt
@@ -67,7 +69,7 @@ def determine_energy_typtage(df_energies):
                                             df_merge1["Q_H [W]"].loc[i] / 1000
             df_year.loc[j, 'Q_TWW [kWh/a]'] = df_year.loc[j, 'Q_TWW [kWh/a]'] + df_merge1['Anzahl Tage'].loc[i] * \
                                               df_merge1["Q_TWW [W]"].loc[i] / 1000
-            df_year.loc[j, 'Q_K [kwH/a]'] = df_year.loc[j, 'Q_K [kwH/a]'] + df_merge1['Anzahl Tage'].loc[i] * \
+            df_year.loc[j, 'Q_K [kWh/a]'] = df_year.loc[j, 'Q_K [kWh/a]'] + df_merge1['Anzahl Tage'].loc[i] * \
                                             df_merge1["Q_K [W]"].loc[i] / 1000
             df_year.loc[j, 'W_WP_H [kWh/a]'] = df_year.loc[j, 'W_WP_H [kWh/a]'] + df_merge1['Anzahl Tage'].loc[i] * \
                                                df_merge1["W_WP_H1 [W]"].loc[i] / 1000
@@ -90,7 +92,7 @@ def determine_energy_typtage(df_energies):
             df_year.loc[j, 'W_PV [kWh/a]'] = df_year.loc[j, 'W_PV [kWh/a]'] + df_merge1['Anzahl Tage'].loc[i] * df_merge1["W_PV [W]"].loc[i] / 1000
             df_year.loc[j, 'Q_H [kWh/a]'] = df_year.loc[j, 'Q_H [kWh/a]'] + df_merge1['Anzahl Tage'].loc[i] * df_merge1["Q_H [W]"].loc[i] / 1000
             df_year.loc[j, 'Q_TWW [kWh/a]'] = df_year.loc[j, 'Q_TWW [kWh/a]'] + df_merge1['Anzahl Tage'].loc[i] * df_merge1["Q_TWW [W]"].loc[i] / 1000
-            df_year.loc[j, 'Q_K [kwH/a]'] = df_year.loc[j, 'Q_K [kwH/a]'] + df_merge1['Anzahl Tage'].loc[i] * df_merge1["Q_K [W]"].loc[i] / 1000
+            df_year.loc[j, 'Q_K [kWh/a]'] = df_year.loc[j, 'Q_K [kWh/a]'] + df_merge1['Anzahl Tage'].loc[i] * df_merge1["Q_K [W]"].loc[i] / 1000
             df_year.loc[j, 'W_WP_H [kWh/a]'] = df_year.loc[j, 'W_WP_H [kWh/a]'] + df_merge1['Anzahl Tage'].loc[i] * df_merge1["W_WP_H1 [W]"].loc[i] / 1000
             df_year.loc[j, 'W_WP_K [kWh/a]'] = df_year.loc[j, 'W_WP_K [kWh/a]'] + df_merge1['Anzahl Tage'].loc[i] * df_merge1["W_WP_K1 [W]"].loc[i] / 1000
             df_year.loc[j, 'W_WP_TWE [kWh/a]'] = df_year.loc[j, 'W_WP_TWE [kWh/a]'] + df_merge1['Anzahl Tage'].loc[i] * df_merge1["W_WP_TWE [W]"].loc[i] / 1000
@@ -100,30 +102,46 @@ def determine_energy_typtage(df_energies):
 
     for i in range(len(df_merge1)):
 
-        # Wenn Clustertag Nr.1, dann jede Spalte = Spalte Tagesenergiewert * Anzahl Tage im Cluster
+        # Wenn Clustertag Nr.1
         if df_merge1['Cluster Nr.'].loc[i] == 1:
-               j = i  # Laufvariable für 1 Zeil der Variante
+            j = i  # Laufvariable für 1 Zeil der Variante
+            # JAZ Clustering
+            df_year.loc[i, 'JAZ'] = (df_year.loc[i, 'Q_WP_H [kWh/a]'] + df_year.loc[i, 'Q_WP_TWE [kWh/a]']) / (df_year.loc[i, 'W_WP_H [kWh/a]'] + df_year.loc[i, 'W_WP_TWE [kWh/a]'])
+            # SEER Clustering
+            df_year.loc[i, 'SEER'] = df_year.loc[i, 'Q_WP_K [kWh/a]'] / df_year.loc[i, 'W_WP_K [kWh/a]']
 
-        # Wenn Clustertag Nr. 3, Berechnung relative Abweichung der einzelnen Energiewerte zwischen Jahressimulation und Clustering,
-        # Nachfolgen Energiewerte Clustertag 3 * Anzahl Tage in Cluster Nr. 3 auf Clustertag Nr.1 Addieren
+        elif df_merge1['Cluster Nr.'].loc[i] == 2:
+            # JAZ Simulation
+            df_year.loc[i, 'JAZ'] = (df_year.loc[i, 'Q_WP_H [kWh/a]'] + df_year.loc[i, 'Q_WP_TWE [kWh/a]']) / (
+                        df_year.loc[i, 'W_WP_H [kWh/a]'] + df_year.loc[i, 'W_WP_TWE [kWh/a]'])
+            # SEER Simulation
+            df_year.loc[i, 'SEER'] = df_year.loc[i, 'Q_WP_K [kWh/a]'] / df_year.loc[i, 'W_WP_K [kWh/a]']
+
+        # Wenn Clustertag Nr. 3, Berechnung rel.Abweichung
+
         elif df_merge1['Cluster Nr.'].loc[i] == 3:
             df_year.loc[i, 'Ergebnis'] = "rel.Abweichung"       #Beschriftung innerer Tabelle
-            clu = df_year.loc[i-2, 'W_PV [kWh/a]']
-            sim = df_year.loc[i-1, 'W_PV [kWh/a]']
-            absol = clu - sim
-            rel = absol*100/sim
-
             df_year.loc[i, 'W_PV [kWh/a]'] = ((df_year.loc[i-2, 'W_PV [kWh/a]'] - df_year.loc[i-1, 'W_PV [kWh/a]'])*100) / df_year.loc[i-1, 'W_PV [kWh/a]']
             df_year.loc[i, 'Q_H [kWh/a]'] = (df_year.loc[i-2, 'Q_H [kWh/a]'] - df_year.loc[i-1, 'Q_H [kWh/a]'])*100 / df_year.loc[i-1, 'Q_H [kWh/a]']
-            df_year.loc[i, 'Q_TWW [kWh/a]'] = (df_year.loc[i-2, 'Q_TWW [kWh/a]'] - df_year.loc[i-1, 'Q_TWW [kWh/a]'])*100 / df_year.loc[i, 'Q_TWW [kWh/a]']
-            df_year.loc[i, 'Q_K [kwH/a]'] = (df_year.loc[i-2, 'Q_K [kwH/a]'] - df_year.loc[i-1, 'Q_K [kwH/a]'])*100 / df_year.loc[i-1, 'Q_K [kwH/a]']
+            df_year.loc[i, 'Q_TWW [kWh/a]'] = (df_year.loc[i-2, 'Q_TWW [kWh/a]'] - df_year.loc[i-1, 'Q_TWW [kWh/a]'])*100 / df_year.loc[i-1, 'Q_TWW [kWh/a]']
+            df_year.loc[i, 'Q_K [kWh/a]'] = (df_year.loc[i-2, 'Q_K [kWh/a]'] - df_year.loc[i-1, 'Q_K [kWh/a]'])*100 / df_year.loc[i-1, 'Q_K [kWh/a]']
             df_year.loc[i, 'W_WP_H [kWh/a]'] = (df_year.loc[i-2, 'W_WP_H [kWh/a]'] - df_year.loc[i-1, 'W_WP_H [kWh/a]'])*100 / df_year.loc[i-1, 'W_WP_H [kWh/a]']
             df_year.loc[i, 'W_WP_K [kWh/a]'] = (df_year.loc[i-2, 'W_WP_K [kWh/a]'] - df_year.loc[i-1, 'W_WP_K [kWh/a]'])*100 / df_year.loc[i-1, 'W_WP_K [kWh/a]']
             df_year.loc[i, 'W_WP_TWE [kWh/a]'] = (df_year.loc[i-2, 'W_WP_TWE [kWh/a]'] - df_year.loc[i-1, 'W_WP_TWE [kWh/a]'])*100 / df_year.loc[i-1, 'W_WP_TWE [kWh/a]']
             df_year.loc[i, 'Q_WP_H [kWh/a]'] = (df_year.loc[i-2, 'Q_WP_H [kWh/a]'] - df_year.loc[i-1, 'Q_WP_H [kWh/a]'])*100 / df_year.loc[i-1, 'Q_WP_H [kWh/a]']
             df_year.loc[i, 'Q_WP_K [kWh/a]'] = (df_year.loc[i-2, 'Q_WP_K [kWh/a]'] - df_year.loc[i-1, 'Q_WP_K [kWh/a]'])*100 / df_year.loc[i-1, 'Q_WP_K [kWh/a]']
             df_year.loc[i, 'Q_WP_TWE [kWh/a]'] = (df_year.loc[i-2, 'Q_WP_TWE [kWh/a]'] - df_year.loc[i-1, 'Q_WP_TWE [kWh/a]'])*100 / df_year.loc[i-1, 'Q_WP_TWE [kWh/a]']
+            df_year[['W_PV [kWh/a]', 'Q_H [kWh/a]', 'Q_TWW [kWh/a]', 'Q_K [kWh/a]', 'W_WP_H [kWh/a]', 'W_WP_K [kWh/a]',
+                     'W_WP_TWE [kWh/a]', 'Q_WP_H [kWh/a]', 'Q_WP_K [kWh/a]', 'Q_WP_TWE [kWh/a]']]= np.round(df_year[['W_PV [kWh/a]','Q_H [kWh/a]','Q_TWW [kWh/a]','Q_K [kWh/a]', 'W_WP_H [kWh/a]', 'W_WP_K [kWh/a]', 'W_WP_TWE [kWh/a]', 'Q_WP_H [kWh/a]', 'Q_WP_K [kWh/a]', 'Q_WP_TWE [kWh/a]']], decimals=2)
 
-
+            df_year.loc[i, 'JAZ'] = ((df_year.loc[i-2, 'JAZ'] - df_year.loc[i-1, 'JAZ'])*100) / df_year.loc[i-1, 'JAZ']
+            df_year.loc[i, 'SEER'] = ((df_year.loc[i - 2, 'SEER'] - df_year.loc[i - 1, 'SEER']) * 100) / df_year.loc[i - 1, 'SEER']
     df_final = pd.concat([df_merge1, df_year], axis=1, sort=False)
+
+    #Berechnung JAZ und SEER
+
+
+
+
+
     return df_final

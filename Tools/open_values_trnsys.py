@@ -1,6 +1,10 @@
 import pandas as pd
 import os
 import numpy as np
+from datetime import datetime
+
+
+now = datetime.now()
 
 def _open_trnsys(filepath):
     root, extension = os.path.splitext(filepath)
@@ -27,6 +31,6 @@ def _open_trnsys(filepath):
     #Wenn ein Schalter aktiv, dann Standby ungleich 0
     df_trnsys["Standby"] = df_trnsys["Heizen"] + df_trnsys["TWE"] + df_trnsys["Kuehlen"]
 
-    print("values_trnsys successfully load")
+    print(now.strftime("%m/%d/%Y, %H:%M:%S") + str(": values_trnsys successfully load"))
 
     return df_trnsys

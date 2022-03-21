@@ -11,6 +11,7 @@ from Tools.create_date_column import _create_date
 from Tools.energie_assignment import _assign_energies
 from Tools.create_day_values import _create_days
 from Tools.energies_typtage import determine_energy_typtage
+from Tools.create_plots import _create_plots
 
 start_time = datetime.datetime.strptime("01 01 00 00", '%m %d %H %M')
 dev = True
@@ -81,3 +82,5 @@ file_name_results = "results_Try_Analyse_" + str(file_name_results) + ".csv"
 path_results = os.path.join(path,file_name_results).replace("\\","/")
 df_typtage.to_csv(path_results)
 
+#Plots erstellen
+_create_plots(df_typtage,path)

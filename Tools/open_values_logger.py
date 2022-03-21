@@ -1,5 +1,8 @@
 import pandas as pd
 import os
+from datetime import datetime
+
+now = datetime.now()
 
 def _open_logger(filepath):
     root, extension = os.path.splitext(filepath)
@@ -36,6 +39,6 @@ def _open_logger(filepath):
     df_logger["Q_H [W]"] = df_heizlast["Q_H [W]"]
     df_logger["Q_K [W]"] = df_kuehllast['Q_K [W]']
 
-    print("values_logger_successfully load")
+    print(now.strftime("%m/%d/%Y, %H:%M:%S") + (": values_logger_successfully load"))
 
     return df_logger
