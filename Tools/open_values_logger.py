@@ -1,10 +1,10 @@
 import pandas as pd
 import os
-from datetime import datetime
+import datetime
 
-now = datetime.now()
 
 def _open_logger(filepath):
+    print(str(datetime.datetime.now()) + str(": loading values_logger ..."))
     root, extension = os.path.splitext(filepath)
     if extension == ".xlsx":
         df_logger = pd.read_excel(filepath)
@@ -39,6 +39,6 @@ def _open_logger(filepath):
     df_logger["Q_H [W]"] = df_heizlast["Q_H [W]"]
     df_logger["Q_K [W]"] = df_kuehllast['Q_K [W]']
 
-    print(now.strftime("%m/%d/%Y, %H:%M:%S") + (": values_logger_successfully load"))
+    print(str(datetime.datetime.now()) + str(": values_logger successfully load"))
 
     return df_logger

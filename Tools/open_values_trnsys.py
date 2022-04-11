@@ -1,12 +1,11 @@
 import pandas as pd
 import os
 import numpy as np
-from datetime import datetime
+import datetime
 
-
-now = datetime.now()
 
 def _open_trnsys(filepath):
+    print(str(datetime.datetime.now()) + str(": loading values_trnsys ..."))
     root, extension = os.path.splitext(filepath)
     if extension == ".xlsx":
         df_trnsys = pd.read_excel(filepath)
@@ -31,6 +30,6 @@ def _open_trnsys(filepath):
     #Wenn ein Schalter aktiv, dann Standby ungleich 0
     df_trnsys["Standby"] = df_trnsys["Heizen"] + df_trnsys["TWE"] + df_trnsys["Kuehlen"]
 
-    print(now.strftime("%m/%d/%Y, %H:%M:%S") + str(": values_trnsys successfully load"))
+    print(str(datetime.datetime.now()) + str(": values_trnsys successfully load"))
 
     return df_trnsys

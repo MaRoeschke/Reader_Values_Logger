@@ -1,11 +1,52 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-from datetime import datetime
+import datetime
 
-now = datetime.now()
+def add_value_labels(ax, spacing=5):
+
+
+    """Add labels to the end of each bar in a bar chart.
+
+    Arguments:
+        ax (matplotlib.axes.Axes): The matplotlib object containing the axes
+            of the plot to annotate.
+        spacing (int): The distance between the labels and the bars.
+    """
+
+    # For each bar: Place a label
+    for rect in ax.patches:
+        # Get X and Y placement of label from rect.
+        y_value = rect.get_height()
+        x_value = rect.get_x() + rect.get_width() / 2
+
+        # Number of points between bar and label. Change to your liking.
+        space = spacing
+        # Vertical alignment for positive values
+        va = 'bottom'
+
+        # If value of bar is negative: Place label below bar
+        if y_value < 0:
+            # Invert space to place label below
+            space *= -1
+            # Vertically align label at top
+            va = 'top'
+
+        # Use Y value as label and format number with one decimal place
+        label = "{:.1f}".format(y_value)
+
+        # Create annotation
+        ax.annotate(
+            label,                      # Use `label` as label
+            (x_value, y_value),         # Place label at end of the bar
+            xytext=(0, space),          # Vertically shift label by `space`
+            textcoords="offset points", # Interpret `xytext` as offset in points
+            ha='center',                # Horizontally center label
+            va=va,                      # Vertically align label differently for
+            rotation=90, fontsize=6)    # positive and negative values.
 
 def _create_plots(df_typtage, path):
+    print(str(datetime.datetime.now()) + str(": create graphs ..."))
     #Aufteilen der Daten in drei Saisons
     mask1 = df_typtage['Cluster/FaktorT'].str.contains('C4/') | df_typtage['Cluster/FaktorT'].str.contains('C5/') | \
             df_typtage['Cluster/FaktorT'].str.contains('C3/')
@@ -34,7 +75,7 @@ def _create_plots(df_typtage, path):
     color_array=[red_array,blue_array, green_array]
 
     #Clustervarianten
-    cluster_var = [["C4", 'C3', 'C5'],['C42', 'C32', 'C43'],['C44','C33','C22']]
+    cluster_var = [["C4", 'C3', 'C5'],['C42', 'C32', 'C43'],['C33','C22','C44']]
 
     #Array für Diagrammtitel nach Einteilung in Saisons
     saison = ["Ganzjährig", "Saison heizlastig", "Saison gleich"]
@@ -102,17 +143,19 @@ def _create_plots(df_typtage, path):
                 axs[0].set_title(heads[j][0])
                 axs[0].get_xaxis().set_visible(False)
                 axs[0].grid(axis='y')
+                add_value_labels(axs[0])
 
                 axs[1].bar(Y, y, color=color_plot)
                 axs[1].set_title(heads[j][1])
                 axs[1].get_xaxis().set_visible(False)
                 axs[1].grid(axis='y')
+                add_value_labels(axs[1])
 
                 axs[2].bar(Z, z, color=color_plot)
                 axs[2].set_title(heads[j][2])
                 axs[2].get_xaxis().set_visible(False)
                 axs[2].grid(axis='y')
-
+                add_value_labels(axs[2])
                 #Erstellen der Legende
                 keys = labels
                 values = color_plot
@@ -148,11 +191,13 @@ def _create_plots(df_typtage, path):
                 axs[0].set_title(heads[j][0])
                 axs[0].get_xaxis().set_visible(False)
                 axs[0].grid(axis='y')
+                add_value_labels(axs[0])
 
                 axs[1].bar(Y, y, color=color_plot, label=labels)
                 axs[1].set_title(heads[j][1])
                 axs[1].get_xaxis().set_visible(False)
                 axs[1].grid(axis='y')
+                add_value_labels(axs[1])
 
                 keys = labels
                 values = color_plot
@@ -166,8 +211,10 @@ def _create_plots(df_typtage, path):
                 savein = path
                 name = str("\\Abb.") + str(i + 1) + str(j + 1) + str(".png")
                 plt.savefig(savein + name, bbox_inches='tight', dpi=200)
-
-    print(now.strftime("%m/%d/%Y, %H:%M:%S") + str(": Plots erstellt"))
+            plt.clf()
+            plt.cla()
+            plt.close()
+    print(str(datetime.datetime.now()) + str(": Plots erstellt"))
 
 
 

@@ -108,8 +108,10 @@ def determine_energy_typtage(df_energies):
             # JAZ Clustering
             df_year.loc[i, 'JAZ'] = (df_year.loc[i, 'Q_WP_H [kWh/a]'] + df_year.loc[i, 'Q_WP_TWE [kWh/a]']) / (df_year.loc[i, 'W_WP_H [kWh/a]'] + df_year.loc[i, 'W_WP_TWE [kWh/a]'])
             # SEER Clustering
-            df_year.loc[i, 'SEER'] = df_year.loc[i, 'Q_WP_K [kWh/a]'] / df_year.loc[i, 'W_WP_K [kWh/a]']
-
+            if df_year.loc[i, 'W_WP_K [kWh/a]'] != 0:
+                df_year.loc[i, 'SEER'] = df_year.loc[i, 'Q_WP_K [kWh/a]'] / df_year.loc[i, 'W_WP_K [kWh/a]']
+            else:
+                df_year.loc[i, 'SEER'] = 0
         elif df_merge1['Cluster Nr.'].loc[i] == 2:
             # JAZ Simulation
             df_year.loc[i, 'JAZ'] = (df_year.loc[i, 'Q_WP_H [kWh/a]'] + df_year.loc[i, 'Q_WP_TWE [kWh/a]']) / (
